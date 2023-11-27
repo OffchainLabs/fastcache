@@ -5,6 +5,7 @@ package fastcache
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"sync/atomic"
 
@@ -126,6 +127,7 @@ func New(maxBytes int) *Cache {
 	for i := range c.buckets[:] {
 		c.buckets[i].Init(maxBucketBytes)
 	}
+	runtime.SetFinalizer(&c, func(cache *Cache) { cache.Reset() })
 	return &c
 }
 
